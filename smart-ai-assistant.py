@@ -109,7 +109,9 @@ def process_command(command):
         # App is terminated
         sys.exit()
     elif "fuck you" in command:
-        speak("Wow, I may be your assistant but I'm not your bitch!")      
+        speak("Wow, I may be your assistant but I'm not your bitch!") 
+    elif "who is the best" in command:
+        speak("You are sir! The best of the best!")     
     elif "open browser" in command:
         webbrowser.open("https://www.google.com")
         speak("Opening the web browser.")
