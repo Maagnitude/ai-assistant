@@ -8,7 +8,19 @@ import time
 import sys
 import random
 from word2number import w2n
-from creds import creds, access_token, device_id
+from creds import creds, access_token, desktop_id, mobile_id
+import openai
+
+# openai.api_key = ""
+
+# OPENAI - IN PROGRESS
+# def generate_gpt_response(prompt):
+#     response = openai.Completion.create(
+#         engine="davinci",  # Use the appropriate GPT-3 model
+#         prompt=prompt,
+#         max_tokens=50,  # Adjust the maximum response length as needed
+#     )
+#     return response.choices[0].text
 
 # p = pyaudio.PyAudio()
 # for i in range(p.get_device_count()):
@@ -17,6 +29,7 @@ from creds import creds, access_token, device_id
     
 second_microphone_index = 1
 OFFSET = 0
+CURRENT_DEVICE = desktop_id
 
 # Initialize the recognizer
 recognizer = sr.Recognizer()
@@ -30,34 +43,34 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=creds["client_id"],
 # token = sp._auth_headers()
 # print(token)
 
-headers = {
-    'Authorization': f'Bearer {access_token}',
-}
+# headers = {
+#     'Authorization': f'Bearer {access_token}',
+# }
 
-response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
+# response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
 
 # print(response.json())
 
-def stop_thread(thread):
-    thread._stop()
-
 def play_track(track_uri):
-    sp.start_playback(uris=[track_uri], device_id=device_id)
+    sp.start_playback(uris=[track_uri], device_id=desktop_id)
     
 def pause_track():
     global OFFSET
     OFFSET = sp.current_playback()['progress_ms']
-    sp.pause_playback(device_id=device_id)
+    sp.pause_playback(device_id=desktop_id)
     
 def resume_track(position_ms):
-    sp.start_playback(device_id=device_id, position_ms=position_ms)
+    sp.start_playback(device_id=desktop_id, position_ms=position_ms)
     
 def change_volume(volume_percent):
     if volume_percent > 100:
         volume_percent = 100
     elif volume_percent < 0:
         volume_percent = 0
-    sp.volume(volume_percent, device_id=device_id)
+    sp.volume(volume_percent, device_id=desktop_id)
+    
+def change_device(device_id):
+    sp.transfer_playback(device_id=device_id, force_play=True)
     
 def get_current_volume():
     return sp.current_playback()['device']['volume_percent']
@@ -70,6 +83,7 @@ def isbusy():
         return False
 
 def process_command(command):
+    global CURRENT_DEVICE
     global OFFSET
     if "music" in command:
         OFFSET = 0
@@ -127,6 +141,15 @@ def process_command(command):
                     print("Sorry, I could not understand your audio.")
                 except sr.RequestError as e:
                     print(f"Could not request results; {e}")
+    elif "device" in command:
+        if CURRENT_DEVICE == desktop_id:
+            CURRENT_DEVICE = mobile_id
+            speak("Transfering playback to mobile.")
+            change_device(mobile_id)
+        else:
+            CURRENT_DEVICE = desktop_id
+            speak("Transfering playback to desktop.")
+            change_device(desktop_id)
     elif "what's up" in command:
         speak("I'm doing great sir! Thanks for asking.")
     elif "you're dismissed" in command:
@@ -164,6 +187,8 @@ def process_command(command):
     elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
         speak(f"Okay I'll wait!")
     else:
+        # gpt_response = generate_gpt_response(command)
+        # speak(gpt_response)
         print("Sorry, I didn't understand that command.")
         speak("Sorry, I didn't understand that command.")
 
