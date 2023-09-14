@@ -1,0 +1,6 @@
+      Keyword Examples:
+1. Music            2. Stop
+3. Resume           4. Change volume
+5. Change device    6. Weather
+7. Open browser     8. Search for
+9. Joke             10. Nothing

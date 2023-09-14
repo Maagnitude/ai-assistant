@@ -11,6 +11,7 @@ from word2number import w2n
 from creds import creds, access_token, desktop_id, mobile_id
 import openai
 from features.weather import get_weather
+from features.jokes import tell_a_joke
 
 # openai.api_key = ""
 
@@ -100,16 +101,19 @@ def process_command(command):
                     track_uri = sp.search(q=command, limit=1)['tracks']['items'][0]['uri']
                     play_track(track_uri)
                     artist = sp.search(q=command, limit=1)['tracks']['items'][0]['artists'][0]['name']
-                    speak(f"Playing {command} by {artist} on Spotify.")
                     print(f"Playing '{command}' by {artist} on Spotify.")
+                    speak(f"Playing {command} by {artist} on Spotify.")
                     if (artist.lower() == "metallica"):
                         time.sleep(5)
+                        print("Let's rock it baby!")
                         speak("Let's rock it baby!")
                         if "sir" in command or "puppets" in command:
                             time.sleep(2)
+                            print("Master! Master! Where's the dreams that I've been after?")
                             speak("Master! Master! Where's the dreams that I've been after?")
                         else:
                             time.sleep(2)
+                            print("I would prefer the Master of Puppets, but it's okay.")
                             speak("I would prefer the Master of Puppets, but it's okay.")
                 except sr.UnknownValueError:
                     print("Sorry, I could not understand your audio.")
@@ -123,8 +127,8 @@ def process_command(command):
         resume_track(OFFSET)
     elif "volume" in command:
         curr_volume = get_current_volume()
-        speak(f"Current volume is {curr_volume} percent. What volume level do you want?")
         print(f"Current volume: {curr_volume}%")
+        speak(f"Current volume is {curr_volume} percent. What volume level do you want?")
         with sr.Microphone() as source:
                 recognizer = sr.Recognizer()
                 print("Listening...")
@@ -136,8 +140,8 @@ def process_command(command):
                     try:
                         number_in_numeric = w2n.word_to_num(command)
                         change_volume(number_in_numeric)
-                        speak(f"Changing volume to {number_in_numeric} percent.")
                         print(f"New volume: {number_in_numeric}%")
+                        speak(f"Changing volume to {number_in_numeric} percent.")
                     except ValueError:
                         speak("Sorry, I didn't understand that command.")
                 except sr.UnknownValueError:
@@ -155,8 +159,8 @@ def process_command(command):
             change_device(desktop_id)
     elif "weather" in command:
         msg = get_weather(location="Athens")
-        speak(msg)
         print(msg)
+        speak(msg)
         with sr.Microphone() as source:
                 recognizer = sr.Recognizer()
                 print("Listening...")
@@ -206,6 +210,10 @@ def process_command(command):
                     print("Sorry, I could not understand your audio.")
                 except sr.RequestError as e:
                     print(f"Could not request results; {e}")   
+    elif "joke" in command or "jokes" in command:
+        msg = tell_a_joke()
+        print(msg)
+        speak(msg)
     elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
         speak(f"Okay I'll wait!")
     else:
@@ -248,6 +256,10 @@ def listen_to_microphone():
             response = random.choice(responses)
             speak(response)
             print(response)
+            f = open('menu.txt', 'r')
+            content = f.read()
+            print(content)
+            f.close()
             recognizer.adjust_for_ambient_noise(source)
             audio = recognizer.listen(source)
             print("Recognizing...")
