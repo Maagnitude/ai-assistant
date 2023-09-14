@@ -2,9 +2,10 @@ import requests
 import sys
 from datetime import datetime
 import json
+from creds import weather_key
 
 def get_weather(location, date=datetime.now().strftime("%Y-%m-%d")):
-    api_key = 'HGYLZKAKK25WVYSZVVCFE5LUE'
+    api_key = weather_key
     
     try:
         # Make the API request
