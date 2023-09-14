@@ -4,11 +4,10 @@ import pyttsx3
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import requests
-import threading
-import pyaudio
 import time
 import sys
 import random
+from word2number import w2n
 from creds import creds, access_token, device_id
 
 # p = pyaudio.PyAudio()
@@ -37,13 +36,11 @@ headers = {
 
 response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
 
-# Print the response to see your available devices
 # print(response.json())
 
 def stop_thread(thread):
     thread._stop()
 
-# Function to play a specific track
 def play_track(track_uri):
     sp.start_playback(uris=[track_uri], device_id=device_id)
     
@@ -55,6 +52,16 @@ def pause_track():
 def resume_track(position_ms):
     sp.start_playback(device_id=device_id, position_ms=position_ms)
     
+def change_volume(volume_percent):
+    if volume_percent > 100:
+        volume_percent = 100
+    elif volume_percent < 0:
+        volume_percent = 0
+    sp.volume(volume_percent, device_id=device_id)
+    
+def get_current_volume():
+    return sp.current_playback()['device']['volume_percent']
+
 def isbusy():
     current_track = sp.current_playback()
     if current_track is not None and current_track['is_playing']:
@@ -62,13 +69,10 @@ def isbusy():
     else:
         return False
 
-# Function to process voice commands
 def process_command(command):
     global OFFSET
-    if "play some music" in command:
+    if "music" in command:
         OFFSET = 0
-        # Open Spotify and play music (You'll need to implement Spotify integration here)
-        # You can use the spotipy library for Spotify API integration.
         speak("Which song do you want to play?")
         with sr.Microphone() as source:
                 recognizer = sr.Recognizer()
@@ -102,6 +106,27 @@ def process_command(command):
     elif "resume" in command:
         speak("Resuming")
         resume_track(OFFSET)
+    elif "volume" in command:
+        curr_volume = get_current_volume()
+        speak(f"Current volume is {curr_volume} percent. What volume level do you want?")
+        with sr.Microphone() as source:
+                recognizer = sr.Recognizer()
+                print("Listening...")
+                recognizer.adjust_for_ambient_noise(source)
+                audio = recognizer.listen(source)
+                print("Recognizing...")
+                try:
+                    command = recognizer.recognize_google(audio).lower()
+                    try:
+                        number_in_numeric = w2n.word_to_num(command)
+                        change_volume(number_in_numeric)
+                        speak(f"Changing volume to {number_in_numeric} percent.")
+                    except ValueError:
+                        speak("Sorry, I didn't understand that command.")
+                except sr.UnknownValueError:
+                    print("Sorry, I could not understand your audio.")
+                except sr.RequestError as e:
+                    print(f"Could not request results; {e}")
     elif "what's up" in command:
         speak("I'm doing great sir! Thanks for asking.")
     elif "you're dismissed" in command:
@@ -142,7 +167,6 @@ def process_command(command):
         print("Sorry, I didn't understand that command.")
         speak("Sorry, I didn't understand that command.")
 
-# Function to listen to the microphone
 def listen_to_microphone():
     
     with sr.Microphone() as source:
@@ -196,7 +220,7 @@ def speak(text, speed=1.20):
     engine.setProperty('rate', speed * 150)
     fvoice = engine.getProperty('voices')
     engine.setProperty('voice', fvoice[0].id)
-    engine.setProperty('engine', 'flite')  # Set to 'espeak' for eSpeak
+    engine.setProperty('engine', 'flite')
     engine.say(text)
     engine.runAndWait()
 
