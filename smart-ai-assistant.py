@@ -10,7 +10,10 @@ import random
 from word2number import w2n
 from creds import creds, access_token, desktop_id, mobile_id
 import openai
+<<<<<<< HEAD
 from features.weather import get_weather
+=======
+>>>>>>> 6bcc0c247af1fb90304714bd62efcbdddec9c5c0
 
 # openai.api_key = ""
 
@@ -153,6 +156,7 @@ def process_command(command):
             CURRENT_DEVICE = desktop_id
             speak("Transfering playback to desktop.")
             change_device(desktop_id)
+<<<<<<< HEAD
     elif "weather" in command:
         msg = get_weather(location="Athens")
         speak(msg)
@@ -173,6 +177,8 @@ def process_command(command):
                     print("Sorry, I could not understand your audio.")
                 except sr.RequestError as e:
                     print(f"Could not request results; {e}")   
+=======
+>>>>>>> 6bcc0c247af1fb90304714bd62efcbdddec9c5c0
     elif "what's up" in command:
         speak("I'm doing great sir! Thanks for asking.")
     elif "you're dismissed" in command:
