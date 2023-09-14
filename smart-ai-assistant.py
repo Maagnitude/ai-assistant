@@ -10,6 +10,7 @@ import random
 from word2number import w2n
 from creds import creds, access_token, desktop_id, mobile_id
 import openai
+from features.weather import get_weather
 
 # openai.api_key = ""
 
@@ -100,7 +101,7 @@ def process_command(command):
                     play_track(track_uri)
                     artist = sp.search(q=command, limit=1)['tracks']['items'][0]['artists'][0]['name']
                     speak(f"Playing {command} by {artist} on Spotify.")
-                    print(f"Playing {command} by {artist} on Spotify.")
+                    print(f"Playing '{command}' by {artist} on Spotify.")
                     if (artist.lower() == "metallica"):
                         time.sleep(5)
                         speak("Let's rock it baby!")
@@ -123,6 +124,7 @@ def process_command(command):
     elif "volume" in command:
         curr_volume = get_current_volume()
         speak(f"Current volume is {curr_volume} percent. What volume level do you want?")
+        print(f"Current volume: {curr_volume}%")
         with sr.Microphone() as source:
                 recognizer = sr.Recognizer()
                 print("Listening...")
@@ -135,6 +137,7 @@ def process_command(command):
                         number_in_numeric = w2n.word_to_num(command)
                         change_volume(number_in_numeric)
                         speak(f"Changing volume to {number_in_numeric} percent.")
+                        print(f"New volume: {number_in_numeric}%")
                     except ValueError:
                         speak("Sorry, I didn't understand that command.")
                 except sr.UnknownValueError:
@@ -150,6 +153,26 @@ def process_command(command):
             CURRENT_DEVICE = desktop_id
             speak("Transfering playback to desktop.")
             change_device(desktop_id)
+    elif "weather" in command:
+        msg = get_weather(location="Athens")
+        speak(msg)
+        print(msg)
+        with sr.Microphone() as source:
+                recognizer = sr.Recognizer()
+                print("Listening...")
+                recognizer.adjust_for_ambient_noise(source)
+                audio = recognizer.listen(source)
+                print("Recognizing...")
+                try:
+                    command = recognizer.recognize_google(audio).lower()
+                    if "thank" in command.lower():
+                        speak("You're welcome sir!")
+                    else:
+                        speak("Show me some gratitude sir! I'm trying my best here!")
+                except sr.UnknownValueError:
+                    print("Sorry, I could not understand your audio.")
+                except sr.RequestError as e:
+                    print(f"Could not request results; {e}")   
     elif "what's up" in command:
         speak("I'm doing great sir! Thanks for asking.")
     elif "you're dismissed" in command:
@@ -182,8 +205,7 @@ def process_command(command):
                 except sr.UnknownValueError:
                     print("Sorry, I could not understand your audio.")
                 except sr.RequestError as e:
-                    print(f"Could not request results; {e}")
-        
+                    print(f"Could not request results; {e}")   
     elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
         speak(f"Okay I'll wait!")
     else:
@@ -193,7 +215,6 @@ def process_command(command):
         speak("Sorry, I didn't understand that command.")
 
 def listen_to_microphone():
-    
     with sr.Microphone() as source:
         if isbusy():
             print("Mic busy. Using second mic.")
@@ -217,14 +238,12 @@ def listen_to_microphone():
         audio = recognizer.listen(source)
 
         try:
+            print("Recognizing...")
             command = recognizer.recognize_google(audio).lower()
             while command.lower() != "jarvis" and command.lower() != "hey" and command.lower() != "is anyone there":
                 recognizer.adjust_for_ambient_noise(source)
                 audio = recognizer.listen(source)
-                print("Recognizing...")
                 command = recognizer.recognize_google(audio).lower()
-                print(f"You said: {command}")
-
             responses = ["Tell me sir!", "How can I help you sir?", "What can I do for you?", "I'm all ears!"]
             response = random.choice(responses)
             speak(response)
@@ -239,8 +258,7 @@ def listen_to_microphone():
         except sr.RequestError as e:
             print(f"Could not request results; {e}")
             
-def speak(text, speed=1.20):
-    
+def speak(text, speed=1.20):   
     engine = pyttsx3.init()
     engine.setProperty('rate', speed * 150)
     fvoice = engine.getProperty('voices')
