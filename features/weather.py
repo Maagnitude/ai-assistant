@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 from creds import weather_key
 
-def get_weather(location, date=datetime.now().strftime("%Y-%m-%d")):
+def get_weather(location='Athens', date=datetime.now().strftime("%Y-%m-%d")):
     api_key = weather_key
     
     try:

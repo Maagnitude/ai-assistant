@@ -8,21 +8,10 @@ import time
 import sys
 import random
 from word2number import w2n
-from creds import creds, access_token, desktop_id, mobile_id
-import openai
+from creds import creds, desktop_id, mobile_id#, access_token 
 from features.weather import get_weather
 from features.jokes import tell_a_joke
-
-# openai.api_key = ""
-
-# OPENAI - IN PROGRESS
-# def generate_gpt_response(prompt):
-#     response = openai.Completion.create(
-#         engine="davinci",  # Use the appropriate GPT-3 model
-#         prompt=prompt,
-#         max_tokens=50,  # Adjust the maximum response length as needed
-#     )
-#     return response.choices[0].text
+# from features.chatbot import generate_response
 
 # p = pyaudio.PyAudio()
 # for i in range(p.get_device_count()):
@@ -158,7 +147,8 @@ def process_command(command):
             speak("Transfering playback to desktop.")
             change_device(desktop_id)
     elif "weather" in command:
-        msg = get_weather(location="Athens")
+        location = command.split("in", 1)[-1].strip()
+        msg = get_weather(location=location)
         print(msg)
         speak(msg)
         with sr.Microphone() as source:
@@ -176,7 +166,7 @@ def process_command(command):
                 except sr.UnknownValueError:
                     print("Sorry, I could not understand your audio.")
                 except sr.RequestError as e:
-                    print(f"Could not request results; {e}")   
+                    print(f"Could not request results; {e}")
     elif "what's up" in command:
         speak("I'm doing great sir! Thanks for asking.")
     elif "you're dismissed" in command:
@@ -184,9 +174,9 @@ def process_command(command):
         # App is terminated
         sys.exit()
     elif "fuck you" in command:
-        speak("Wow, I may be your assistant but I'm not your bitch!") 
+        speak("Wow, I may be your assistant but I'm not your bitch!")
     elif "who is the best" in command:
-        speak("You are sir! The best of the best!")     
+        speak("You are sir! The best of the best!")
     elif "open browser" in command:
         webbrowser.open("https://www.google.com")
         speak("Opening the web browser.")
@@ -217,8 +207,9 @@ def process_command(command):
     elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
         speak(f"Okay I'll wait!")
     else:
-        # gpt_response = generate_gpt_response(command)
-        # speak(gpt_response)
+        # msg = generate_response(command)
+        # print(msg)
+        # speak(msg)
         print("Sorry, I didn't understand that command.")
         speak("Sorry, I didn't understand that command.")
 
