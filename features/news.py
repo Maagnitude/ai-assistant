@@ -10,7 +10,9 @@ def get_news():
     
     if "data" in data and len(data["data"]) > 0:
         for i in range(len(data["data"])):
-            newslist.append(data["data"][i]["description"])
+            news = data["data"][i]["description"]
+            news = news.replace("&#8217;", "'")
+            newslist.append(news)
         return newslist
     
     

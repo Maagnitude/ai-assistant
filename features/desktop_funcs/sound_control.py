@@ -1,4 +1,3 @@
-import pycaw.pycaw as pycaw
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
@@ -6,12 +5,12 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 class VolumeControl:
     
     def __init__(self):
-        pass
+        self.devices = AudioUtilities.GetSpeakers()
+        self.sessions = AudioUtilities.GetAllSessions()
 
     # Function to increase the volume
     def increase_volume(self):
-        devices = AudioUtilities.GetSpeakers()
-        interface = devices.Activate(
+        interface = self.devices.Activate(
             IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
         current_volume = volume.GetMasterVolumeLevelScalar()
@@ -20,8 +19,7 @@ class VolumeControl:
 
     # Function to decrease the volume
     def decrease_volume(self):
-        devices = AudioUtilities.GetSpeakers()
-        interface = devices.Activate(
+        interface = self.devices.Activate(
             IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         volume = cast(interface, POINTER(IAudioEndpointVolume))
         current_volume = volume.GetMasterVolumeLevelScalar()
@@ -30,14 +28,12 @@ class VolumeControl:
 
     # Mute Sound
     def mute_sound(self):
-        sessions = pycaw.AudioUtilities.GetAllSessions()
-        for session in sessions:
+        for session in self.sessions:
             volume = session.SimpleAudioVolume
             volume.SetMute(1, None)  # Mute audio
 
     # Unmute Sound
     def unmute_sound(self):
-        sessions = pycaw.AudioUtilities.GetAllSessions()
-        for session in sessions:
+        for session in self.sessions:
             volume = session.SimpleAudioVolume
             volume.SetMute(0, None)  # Unmute audio

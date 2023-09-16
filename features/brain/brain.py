@@ -1,8 +1,8 @@
 import sys
 from features.voice.voice import Voice
 from features.spotify_funcs.spotify_control import Spotifier
-from features.desktop_funcs.sound_control import VolumeControl
-from features.desktop_funcs.system_info import get_system_info
+# from features.desktop_funcs.sound_control import VolumeControl
+# from features.desktop_funcs.system_info import get_system_info
 from features.weather import get_weather
 from features.news import get_news
 from features.jokes import tell_a_joke
@@ -17,13 +17,14 @@ class Brain:
         self.voice = Voice()
         self.spier = Spotifier()
         self.recognizer = sr.Recognizer()
-        self.soundcontroller = VolumeControl()
+        # self.soundcontroller = VolumeControl()
         
     def process_command(self, command):
         if "system" in command:
-            info = get_system_info()
-            print(info)
-            self.voice.speak(info)
+            # info = get_system_info()
+            # print(info)
+            # self.voice.speak(info)
+            pass
         elif "music" in command:
             self.voice.speak("Which song do you want to play?")
             with sr.Microphone() as source:
@@ -62,9 +63,11 @@ class Brain:
                     except sr.RequestError as e:
                         print(f"Could not request results; {e}")
         elif "stop" in command:
+            print("Pausing")
             self.voice.speak("Pausing")
             self.spier.pause_track()
         elif "resume" in command:
+            print("Resuming")
             self.voice.speak("Resuming")
             self.spier.resume_track()
         elif "change volume" in command:

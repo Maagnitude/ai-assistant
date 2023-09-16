@@ -22,22 +22,7 @@ class Ears:
     def listen_to_microphone(self, spier):
         with sr.Microphone() as source:
             if spier.isbusy():
-                print("Mic busy. Using second mic.")
-                recognizer2 = sr.Recognizer()
-                with sr.Microphone(device_index=self.second_microphone_index) as source2:
-                    print("Listening with 2nd mic...")
-                    recognizer2.adjust_for_ambient_noise(source2)
-                    audio = recognizer2.listen(source2)
-                    print("Recognizing...")
-                    try:
-                        command = recognizer2.recognize_google(audio).lower()
-                        print(f"You said: {command}")
-                        self.brain.process_command(command)
-                    except sr.UnknownValueError:
-                        print("Sorry, I could not understand your audio.")
-                    except sr.RequestError as e:
-                        print(f"Could not request results; {e}")
-                
+                self.listen_to_2nd_microphone()             
             print("Listening...")
             self.recognizer.adjust_for_ambient_noise(source)
             audio = self.recognizer.listen(source)
@@ -69,6 +54,23 @@ class Ears:
                     print("Recognizing...")
                     self.last_interastion = datetime.now()
                     self.brain.process_command(command)
+            except sr.UnknownValueError:
+                print("Sorry, I could not understand your audio.")
+            except sr.RequestError as e:
+                print(f"Could not request results; {e}")
+                
+    def listen_to_2nd_microphone(self):
+        print("Mic busy. Using second mic.")
+        recognizer2 = sr.Recognizer()
+        with sr.Microphone(device_index=self.second_microphone_index) as source2:
+            print("Listening with 2nd mic...")
+            recognizer2.adjust_for_ambient_noise(source2)
+            audio = recognizer2.listen(source2)
+            print("Recognizing...")
+            try:
+                command = recognizer2.recognize_google(audio).lower()
+                print(f"You said: {command}")
+                self.brain.process_command(command)
             except sr.UnknownValueError:
                 print("Sorry, I could not understand your audio.")
             except sr.RequestError as e:

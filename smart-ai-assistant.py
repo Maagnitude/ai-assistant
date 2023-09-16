@@ -14,7 +14,8 @@ spier = Spotifier()
 if __name__ == "__main__":
     
     # WELCOME SONG
-    spier.play_track("Hotel California", "Eagles")
+    # spier.play_track("Hotel California", "Eagles")
+    spier.play_track("The day the never comes", "Metallica")
     
     # GREETING
     if datetime.now().hour >= 0 and datetime.now().hour < 12:
@@ -39,7 +40,8 @@ if __name__ == "__main__":
         ears.recognizer.adjust_for_ambient_noise(source)
         audio = ears.recognizer.listen(source)
         command = ears.recognizer.recognize_google(audio).lower()
-    if "yes" in command:
+        print(f"You said: {command}")
+    if "yes" in command or "please" in command or "sure" in command:
         print("Sure thing!")
         voice.speak("Sure thing!")
         print("Today's top science news are:")

@@ -9,9 +9,7 @@ from features.voice.voice import Voice
 # headers = {
 #     'Authorization': f'Bearer {access_token}',
 # }
-
 # response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
-
 # print(response.json())
 
 class Spotifier:
