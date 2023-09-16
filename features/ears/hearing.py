@@ -2,6 +2,7 @@ import speech_recognition as sr
 from features.voice.voice import Voice
 from features.brain.brain import Brain
 import random
+from datetime import datetime
 
 # p = pyaudio.PyAudio()
 # for i in range(p.get_device_count()):
@@ -15,6 +16,8 @@ class Ears:
         self.voice = Voice()
         self.brain = Brain()
         self.second_microphone_index = 1
+        self.last_interastion = datetime.now()
+        
 
     def listen_to_microphone(self, spier):
         with sr.Microphone() as source:
@@ -40,25 +43,32 @@ class Ears:
             audio = self.recognizer.listen(source)
 
             try:
-                print("Recognizing...")
                 command = self.recognizer.recognize_google(audio).lower()
-                while command.lower() != "jarvis" and command.lower() != "is anyone there":
+                if datetime.now().second - self.last_interastion.second > 25:
+                    while command.lower() != "jarvis" and command.lower() != "is anyone there":
+                        self.recognizer.adjust_for_ambient_noise(source)
+                        audio = self.recognizer.listen(source)
+                        command = self.recognizer.recognize_google(audio).lower()
+                    print("Recognizing...")
+                    responses = ["Tell me sir!", "How can I help you sir?", "What can I do for you?", "I'm all ears!"]
+                    response = random.choice(responses)
+                    self.voice.speak(response)
+                    print(response)
+                    f = open('menu.txt', 'r')
+                    content = f.read()
+                    print(content)
+                    f.close()
                     self.recognizer.adjust_for_ambient_noise(source)
                     audio = self.recognizer.listen(source)
+                    print("Recognizing...")
                     command = self.recognizer.recognize_google(audio).lower()
-                responses = ["Tell me sir!", "How can I help you sir?", "What can I do for you?", "I'm all ears!"]
-                response = random.choice(responses)
-                self.voice.speak(response)
-                print(response)
-                f = open('menu.txt', 'r')
-                content = f.read()
-                print(content)
-                f.close()
-                self.recognizer.adjust_for_ambient_noise(source)
-                audio = self.recognizer.listen(source)
-                print("Recognizing...")
-                command = self.recognizer.recognize_google(audio).lower()
-                self.brain.process_command(command)
+                    self.seconds_without_interaction = 0
+                    self.last_interastion = datetime.now()
+                    self.brain.process_command(command)
+                else:
+                    print("Recognizing...")
+                    self.last_interastion = datetime.now()
+                    self.brain.process_command(command)
             except sr.UnknownValueError:
                 print("Sorry, I could not understand your audio.")
             except sr.RequestError as e:

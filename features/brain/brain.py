@@ -4,6 +4,7 @@ from features.spotify_funcs.spotify_control import Spotifier
 from features.desktop_funcs.sound_control import VolumeControl
 from features.desktop_funcs.system_info import get_system_info
 from features.weather import get_weather
+from features.news import get_news
 from features.jokes import tell_a_joke
 from features.desktop_funcs.directory_control import open_directory
 import webbrowser
@@ -127,6 +128,14 @@ class Brain:
                         print("Sorry, I could not understand your audio.")
                     except sr.RequestError as e:
                         print(f"Could not request results; {e}")
+        elif "news" in command:
+            newslist = get_news()
+            print("Today's top news are:")
+            self.voice.speak("Sure thing! Today's top science news are:")
+            for i, news in enumerate(newslist):
+                print(f"{i+1}. {news}")
+                self.voice.speak(news)
+                self.voice.speak(".")
         elif "what's up" in command:
             self.voice.speak("I'm doing great sir! Thanks for asking.")
         elif "you're dismissed" in command:
