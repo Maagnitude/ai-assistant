@@ -23,9 +23,17 @@ Important: To use the music features, you must have your own Spotify client_id, 
 12. nothing -> nothing 
 
 ## NEW FEATURES
-1. It informs you about the weather, of any city.
-2. It tells you the top news, only for english speaking countries.
-3. It tells jokes.
+1. You can activate the assistant if you clap twice (within 1 second). Just put the argument "clap" like the example below:
+```
+python smart-ai-assistant clap
+```
+It can be activated without clapping, if you just enter no arguments, like:
+```
+python smart-ai-assistant
+```
+2. It informs you about the weather, of any city.
+3. It tells you the top news, only for english speaking countries.
+4. It tells jokes.
 
 ## FUTURE UPGRADES
 1. OpenAI chatbot integration, for a more realistic assistant experience, through TTS.
