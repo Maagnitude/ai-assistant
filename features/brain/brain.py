@@ -1,8 +1,8 @@
 import sys
 from features.voice.voice import Voice
 from features.spotify_funcs.spotify_control import Spotifier
-# from features.desktop_funcs.sound_control import VolumeControl
-# from features.desktop_funcs.system_info import get_system_info
+from features.desktop_funcs.sound_control import VolumeControl
+from features.desktop_funcs.system_info import get_system_info
 from features.weather import get_weather
 from features.news import get_news
 from features.jokes import tell_a_joke
@@ -10,6 +10,7 @@ from features.desktop_funcs.directory_control import open_directory
 import webbrowser
 import speech_recognition as sr
 from word2number import w2n
+from features.chatbot import Chatbot
 
 class Brain:
     
@@ -17,13 +18,14 @@ class Brain:
         self.voice = Voice()
         self.spier = Spotifier()
         self.recognizer = sr.Recognizer()
-        # self.soundcontroller = VolumeControl()
+        self.soundcontroller = VolumeControl()
+        self.chatbot = Chatbot()
         
     def process_command(self, command):
         if "system" in command:
-            # info = get_system_info()
-            # print(info)
-            # self.voice.speak(info)
+            info = get_system_info()
+            print(info)
+            self.voice.speak(info)
             pass
         elif "music" in command:
             self.voice.speak("Which song do you want to play?")
@@ -183,8 +185,8 @@ class Brain:
         elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
             self.voice.speak(f"Okay I'll wait!")
         else:
-            # msg = generate_response(command)
-            # print(msg)
-            # speak(msg)
-            print("Sorry, I didn't understand that command.")
-            self.voice.speak("Sorry, I didn't understand that command.")
+            msg = self.chatbot.generate_response(command)
+            print(msg)
+            self.voice.speak(msg)
+            # print("Sorry, I didn't understand that command.")
+            # self.voice.speak("Sorry, I didn't understand that command.")

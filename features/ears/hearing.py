@@ -2,7 +2,8 @@ import speech_recognition as sr
 from features.voice.voice import Voice
 from features.brain.brain import Brain
 import random
-from datetime import datetime
+from features.clap_detector import clap_trigger
+import time
 
 # p = pyaudio.PyAudio()
 # for i in range(p.get_device_count()):
@@ -16,7 +17,8 @@ class Ears:
         self.voice = Voice()
         self.brain = Brain()
         self.second_microphone_index = 1
-        self.last_interastion = datetime.now()
+        self.last_interaction = time.time()
+        self.jarvis_rests = True
         
 
     def listen_to_microphone(self, spier):
@@ -24,14 +26,17 @@ class Ears:
             if spier.isbusy():
                 self.listen_to_2nd_microphone()             
             print("Listening...")
-            self.recognizer.adjust_for_ambient_noise(source)
+            self.recognizer.adjust_for_ambient_noise(source, duration=0.2)
             audio = self.recognizer.listen(source)
 
             try:
-                command = self.recognizer.recognize_google(audio).lower()
-                if datetime.now().second - self.last_interastion.second > 25:
-                    self.voice.speak("I'm gonna rest for a while, if you don't mind.")
-                    while command.lower() != "jarvis" and command.lower() != "is anyone there":
+                if time.time() - self.last_interaction > 60:
+                    if self.jarvis_rests:
+                        print("I'm gonna rest for a while, if you don't mind.")
+                        self.voice.speak("I'm gonna rest for a while, if you don't mind.")
+                        self.jarvis_rests = False
+                    print("IDLE")
+                    while not (clap_trigger() or self.recognizer.recognize_google(audio).lower() != "jarvis"):
                         self.recognizer.adjust_for_ambient_noise(source)
                         audio = self.recognizer.listen(source)
                         command = self.recognizer.recognize_google(audio).lower()
@@ -39,6 +44,8 @@ class Ears:
                     responses = ["Tell me sir!", "How can I help you sir?", "What can I do for you?", "I'm all ears!"]
                     response = random.choice(responses)
                     self.voice.speak(response)
+                    self.last_interaction = time.time()
+                    self.jarvis_rests = True
                     print(response)
                     f = open('menu.txt', 'r')
                     content = f.read()
@@ -49,11 +56,13 @@ class Ears:
                     print("Recognizing...")
                     command = self.recognizer.recognize_google(audio).lower()
                     self.seconds_without_interaction = 0
-                    self.last_interastion = datetime.now()
+                    self.last_interaction = time.time()
                     self.brain.process_command(command)
-                else:
+                elif time.time() - self.last_interaction <= 60:
+                    print("WOKE UP")
+                    command = self.recognizer.recognize_google(audio).lower()
                     print("Recognizing...")
-                    self.last_interastion = datetime.now()
+                    self.last_interaction = time.time()
                     self.brain.process_command(command)
             except sr.UnknownValueError:
                 print("Sorry, I could not understand your audio.")

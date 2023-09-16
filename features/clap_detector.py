@@ -1,6 +1,5 @@
 import pyaudio
 import numpy as np
-from features.ears.hearing import Ears
 import time
 
 # Constants
@@ -15,8 +14,6 @@ FIRST = time.time()
 SECOND = time.time()
 
 def clap_trigger():
-    
-    ears = Ears()
 
     # Initialize PyAudio
     audio = pyaudio.PyAudio()

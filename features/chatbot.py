@@ -1,17 +1,23 @@
-# import openai
-# from creds import openai_key
+import openai
+from creds import openai_key
 
-# # NOT WORKING YET
+# PAID FEATURE
 
-# # Set your OpenAI API key
-# api_key = openai_key
-
-# # Initialize the OpenAI API client
-# openai.api_key = api_key
-
-# # Define a function to generate a response to a user question
-# def generate_response(user_question):
+class Chatbot:
+    def __init__(self):
+        openai.api_key = openai_key
+        self.messages = []
+        self.completion = None
+        self.chatbot = None
+        
+    def generate_response(self, user_question):
+        self.messages.append({"role": "user", "content": user_question})
+        self.completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=self.messages, max_tokens=30, stop=None)
+        msg = self.completion.choices[0].message.content
+        self.messages.append(self.completion.choices[0].message)
+        return msg
     
-#     completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": user_question}])
-#     text = completion.choices[0].message.content
-#     return text
+    def reset(self):
+        self.messages = []
+        self.completion = None
+        self.chatbot = None

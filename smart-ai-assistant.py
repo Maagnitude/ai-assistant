@@ -7,7 +7,6 @@ from features.news import get_news
 import speech_recognition as sr
 from features.clap_detector import clap_trigger
 import argparse
-# from features.chatbot import generate_response
     
 ears = Ears()
 voice = Voice()
@@ -24,7 +23,7 @@ if __name__ == "__main__":
         
         # WELCOME SONG
         # spier.play_track("Hotel California", "Eagles")
-        # spier.play_track("The day the never comes", "Metallica")
+        spier.play_track("The day the never comes", "Metallica")
         
         # GREETING
         if datetime.now().hour >= 0 and datetime.now().hour < 12:
@@ -51,7 +50,7 @@ if __name__ == "__main__":
     elif args.action != "chat":
     
         # WELCOME SONG
-        # spier.play_track("Hotel California", "Eagles")
+        spier.play_track("Hotel California", "Eagles")
         # spier.play_track("The day the never comes", "Metallica")
         
         # GREETING
