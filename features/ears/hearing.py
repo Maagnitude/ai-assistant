@@ -30,6 +30,7 @@ class Ears:
             try:
                 command = self.recognizer.recognize_google(audio).lower()
                 if datetime.now().second - self.last_interastion.second > 25:
+                    self.voice.speak("I'm gonna rest for a while, if you don't mind.")
                     while command.lower() != "jarvis" and command.lower() != "is anyone there":
                         self.recognizer.adjust_for_ambient_noise(source)
                         audio = self.recognizer.listen(source)

@@ -3,15 +3,6 @@ from spotipy.oauth2 import SpotifyOAuth
 from creds import creds, desktop_id, mobile_id#, access_token
 from features.voice.voice import Voice
 
-# token = sp._auth_headers()
-# print(token)
-
-# headers = {
-#     'Authorization': f'Bearer {access_token}',
-# }
-# response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
-# print(response.json())
-
 class Spotifier:
     
     def __init__(self):
@@ -70,3 +61,22 @@ class Spotifier:
             return True
         else:
             return False
+        
+if __name__ == "__main__":
+    import requests
+    from spotipy.oauth2 import SpotifyOAuth
+    from creds import creds, desktop_id, mobile_id, access_token
+    
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=creds["client_id"],
+                                                            client_secret=creds["client_secret"],
+                                                            redirect_uri='https://localhost:3000',
+                                                            scope="user-read-playback-state,user-modify-playback-state"))
+    
+    token = sp._auth_headers()
+    print(token)
+
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+    }
+    response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
+    print(response.json())
