@@ -23,6 +23,8 @@ Important: To use the music features, you must have your own Spotify client_id, 
 12. nothing -> nothing 
 
 ## NEW FEATURES
+### Now OpenAI's model "gpt-3.5-turbo" is used and, through TTS, our assistant has a more realistic interaction with us.
+Also:
 1. You can activate the assistant if you clap twice (within 1 second). Just put the argument "clap" like the example below:
 ```
 python smart-ai-assistant clap
