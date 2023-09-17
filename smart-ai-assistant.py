@@ -23,7 +23,8 @@ if __name__ == "__main__":
         
         # WELCOME SONG
         # spier.play_track("Hotel California", "Eagles")
-        spier.play_track("The day the never comes", "Metallica")
+        # spier.play_track("The day the never comes", "Metallica")
+        spier.play_track("Back in black", "AC/DC")
         
         # GREETING
         if datetime.now().hour >= 0 and datetime.now().hour < 12:
@@ -35,6 +36,9 @@ if __name__ == "__main__":
         else:
             print("Good evening sir!")
             voice.speak("Good evening sir!")
+            
+        print("Some Black Sabbath to start the day nicely.")
+        voice.speak("Some Black Sabbath to start the day nicely.")
         
         # THE WEATHER
         msg = get_weather(location="Athens")
@@ -42,16 +46,17 @@ if __name__ == "__main__":
         voice.speak(msg)
         
         # JARVIS READY
-        print("Jarvis is at your service, for whatever you need sir.")
-        voice.speak("Jarvis is at your service for whatever you need sir.")
+        print("I hope you have a creative day! Jarvis is at your service, for whatever you need sir.")
+        voice.speak("I hope you have a creative day! Jarvis is at your service for whatever you need sir.")
         while True:
             ears.listen_to_microphone(spier)
             
-    elif args.action != "chat":
+    elif args.action != "clap":
     
         # WELCOME SONG
-        spier.play_track("Hotel California", "Eagles")
+        # spier.play_track("Hotel California", "Eagles")
         # spier.play_track("The day the never comes", "Metallica")
+        spier.play_track("Back in black", "AC/DC")
         
         # GREETING
         if datetime.now().hour >= 0 and datetime.now().hour < 12:
@@ -63,6 +68,9 @@ if __name__ == "__main__":
         else:
             print("Good evening sir!")
             voice.speak("Good evening sir!")
+            
+        print("Some Black Sabbath to start the day nicely.")
+        voice.speak("Some Black Sabbath to start the day nicely.")
         
         # THE WEATHER
         msg = get_weather(location="Athens")
@@ -98,7 +106,7 @@ if __name__ == "__main__":
         #     voice.speak(news)
         
         # JARVIS READY
-        print("Jarvis is at your service, for whatever you need sir.")
-        voice.speak("Jarvis is at your service for whatever you need sir.")
+        print("I hope you have a creative day! Jarvis is at your service, for whatever you need sir.")
+        voice.speak("I hope you have a creative day! Jarvis is at your service for whatever you need sir.")
         while True:
             ears.listen_to_microphone(spier)

@@ -33,11 +33,12 @@ It can be activated without clapping, if you just enter no arguments, like:
 ```
 python smart-ai-assistant
 ```
-2. It informs you about the weather, of any city.
-3. It tells you the top news, only for english speaking countries.
-4. It tells jokes.
+2. If you say "create a script", after it responds, you can give a prompt for a python script. It generates this script, stores it, and executes it. Example in 'generated_scripts' folder.
+3. It informs you about the weather, of any city.
+4. It tells you the top news, only for english speaking countries.
+5. It tells jokes.
 
 ## FUTURE UPGRADES
-1. OpenAI chatbot integration, for a more realistic assistant experience, through TTS.
+- [x] OpenAI chatbot integration, for a more realistic assistant experience, through TTS.
 
-NOTE: Some features require an API_KEY and device_id, so don't expect it to work without them.
+NOTE: Some features require an api_key and device_id, so don't expect it to work without them.

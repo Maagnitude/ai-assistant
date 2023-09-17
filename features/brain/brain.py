@@ -1,8 +1,8 @@
 import sys
 from features.voice.voice import Voice
 from features.spotify_funcs.spotify_control import Spotifier
-from features.desktop_funcs.sound_control import VolumeControl
-from features.desktop_funcs.system_info import get_system_info
+# from features.desktop_funcs.sound_control import VolumeControl
+# from features.desktop_funcs.system_info import get_system_info
 from features.weather import get_weather
 from features.news import get_news
 from features.jokes import tell_a_joke
@@ -11,6 +11,7 @@ import webbrowser
 import speech_recognition as sr
 from word2number import w2n
 from features.chatbot import Chatbot
+from features.script_creator import ScriptCreator
 
 class Brain:
     
@@ -18,14 +19,15 @@ class Brain:
         self.voice = Voice()
         self.spier = Spotifier()
         self.recognizer = sr.Recognizer()
-        self.soundcontroller = VolumeControl()
+        # self.soundcontroller = VolumeControl()
         self.chatbot = Chatbot()
+        self.creator = ScriptCreator()
         
     def process_command(self, command):
         if "system" in command:
-            info = get_system_info()
-            print(info)
-            self.voice.speak(info)
+            # info = get_system_info()
+            # print(info)
+            # self.voice.speak(info)
             pass
         elif "music" in command:
             self.voice.speak("Which song do you want to play?")
@@ -96,18 +98,18 @@ class Brain:
                     except sr.RequestError as e:
                         print(f"Could not request results; {e}")
         elif "mute" in command:
-            self.soundcontroller.mute_sound()
+            # self.soundcontroller.mute_sound()
             print("Sound muted.")
         elif "volume up" in command:
-            self.soundcontroller.increase_volume()
+            # self.soundcontroller.increase_volume()
             print("Volume increased.")
             self.voice.speak("Volume increased.")
         elif "volume down" in command:
-            self.soundcontroller.decrease_volume()
+            # self.soundcontroller.decrease_volume()
             print("Volume decreased.")
             self.voice.speak("Volume decreased.")
         elif "sound on" in command:
-            self.soundcontroller.unmute_sound()
+            # self.soundcontroller.unmute_sound()
             print("Sound unmuted.")
             self.voice.speak("Sound back to normal.")
         elif "device" in command:
@@ -151,8 +153,11 @@ class Brain:
             self.voice.speak("Wow, I may be your assistant but I'm not your bitch!")
         elif "who is the best" in command:
             self.voice.speak("You are sir! The best of the best!")
-        elif "open browser" in command:
-            webbrowser.open("https://www.google.com")
+        elif "browser" in command:
+            webbrowser.open("https://github.com/Maagnitude")
+            webbrowser.open("https://www.linkedin.com/feed/", new=2)
+            webbrowser.open("https://mail.google.com/mail/u/1/#inbox", new=2)
+            webbrowser.open("https://eclass.hua.gr/main/portfolio.php", new=2)
             self.voice.speak("Opening the web browser.")
         elif "open" in command and ("desktop" in command or "documents" in command or "downloads" in command):
             open_directory(f'C:\\Users\\yiwrg\\{command.split(" ")[-1]}')
@@ -184,6 +189,29 @@ class Brain:
             self.voice.speak(msg)
         elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
             self.voice.speak(f"Okay I'll wait!")
+        elif "create a script" in command:
+            self.voice.speak("My pleasure! What do you want it to do?")
+            with sr.Microphone() as source:
+                recognizer = sr.Recognizer()
+                print("Listening...")
+                recognizer.adjust_for_ambient_noise(source)
+                audio = recognizer.listen(source)
+                print("Recognizing...")
+                try:
+                    command = recognizer.recognize_google(audio).lower()
+                    command = "Write a python script for me. I want it to " + command
+                    response = self.chatbot.generate_response(command)
+                    print("Response: ", response)
+                    try:
+                        self.creator.run_generated_script(response)
+                        self.voice.speak("Script created successfully!")
+                    except Exception as e:
+                        print(f"Error executing the script: {e}")
+                except sr.UnknownValueError:
+                    print("Sorry, I could not understand your audio.")
+                except sr.RequestError as e:
+                    print(f"Could not request results; {e}")
+            
         else:
             msg = self.chatbot.generate_response(command)
             print(msg)

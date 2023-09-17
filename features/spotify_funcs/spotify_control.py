@@ -1,12 +1,12 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from creds import creds, desktop_id, mobile_id#, access_token
-from features.voice.voice import Voice
+# from features.voice.voice import Voice
 
 class Spotifier:
     
     def __init__(self):
-        self.voice = Voice()
+        # self.voice = Voice()
         self.scope = "user-read-playback-state,user-modify-playback-state"
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=creds["client_id"],
                                                             client_secret=creds["client_secret"],

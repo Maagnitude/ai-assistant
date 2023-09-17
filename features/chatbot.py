@@ -12,7 +12,7 @@ class Chatbot:
         
     def generate_response(self, user_question):
         self.messages.append({"role": "user", "content": user_question})
-        self.completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=self.messages, max_tokens=30, stop=None)
+        self.completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=self.messages, max_tokens=200, stop=None)
         msg = self.completion.choices[0].message.content
         self.messages.append(self.completion.choices[0].message)
         return msg
