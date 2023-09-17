@@ -42,3 +42,37 @@ python smart-ai-assistant
 - [x] OpenAI chatbot integration, for a more realistic assistant experience, through TTS.
 
 NOTE: Some features require an api_key and device_id, so don't expect it to work without them.
+
+## CREATING A SCRIPT FEATURE
+First, you say "create a script", it responds "My pleasure! What do you want it to do?".
+
+Then, all you have to say is what you want it to do. For example, if you say "calculate the square root of two number", the prompt is formed automatically and the results are shown below.
+
+Prompt:
+```
+Write a python script for me. I want it to calculate the square root of two numbers.
+```
+
+Created script:
+```python
+import math
+
+def calculate_square_root(number1, number2):
+    square_root1 = math.sqrt(number1)
+    square_root2 = math.sqrt(number2)
+    return square_root1, square_root2
+
+# Example usage
+num1 = 16
+num2 = 25
+result1, result2 = calculate_square_root(num1, num2)
+print("Square root of", num1, "is", result1)
+print("Square root of", num2, "is", result2)
+```
+
+After the file creation, it is executed, given the results below:
+```
+Square root of 16 is 4.0
+Square root of 25 is 5.0
+```
+The python file remains stored in "generated_scripts" folder.
