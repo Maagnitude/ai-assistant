@@ -23,8 +23,8 @@ class Ears:
 
     def listen_to_microphone(self, spier):
         with sr.Microphone() as source:
-            if spier.isbusy():
-                self.listen_to_2nd_microphone()             
+            # if spier.isbusy():
+            #     self.listen_to_2nd_microphone()             
             print("Listening...")
             self.recognizer.adjust_for_ambient_noise(source, duration=0.2)
             audio = self.recognizer.listen(source)

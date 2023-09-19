@@ -191,10 +191,12 @@ class Brain:
                     except sr.RequestError as e:
                         print(f"Could not request results; {e}")   
         elif "joke" in command or "jokes" in command:
+            self.spier.change_volume(60)
             msg = self.joker.tell_a_joke()
             print(msg)
             self.voice.speak(msg)
             self.joker.play_joke_effects()
+            self.spier.change_volume(85)
         elif ("nothing" in command) or ("at ease" in command) or ("false alarm" in command):
             self.voice.speak(f"Okay I'll wait!")
         elif "create a script" in command:

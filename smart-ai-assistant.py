@@ -7,15 +7,12 @@ from features.news import get_news
 import speech_recognition as sr
 from features.clap_detector import clap_trigger
 import argparse
-import sys
     
 ears = Ears()
 voice = Voice()
 spier = Spotifier()
 
 if __name__ == "__main__":
-    
-    print(sys.path)
     
     parser = argparse.ArgumentParser(description="Smart AI Assistant")
     parser.add_argument("action", nargs="?", default=None, help="Specify an action (e.g. clap)")
@@ -28,6 +25,7 @@ if __name__ == "__main__":
         # spier.play_track("Hotel California", "Eagles")
         # spier.play_track("The day the never comes", "Metallica")
         spier.play_track("Back in black", "AC/DC")
+        spier.change_volume(85)
         
         # GREETING
         if datetime.now().hour >= 0 and datetime.now().hour < 12:
@@ -51,6 +49,8 @@ if __name__ == "__main__":
         # JARVIS READY
         print("I hope you have a creative day! Jarvis is at your service, for whatever you need sir.")
         voice.speak("I hope you have a creative day! Jarvis is at your service for whatever you need sir.")
+        if spier.isbusy():
+            spier.change_volume(60)
         while True:
             ears.listen_to_microphone(spier)
     elif args.action == "welcome":           
@@ -58,6 +58,7 @@ if __name__ == "__main__":
         # spier.play_track("Hotel California", "Eagles")
         # spier.play_track("The day the never comes", "Metallica")
         spier.play_track("Back in black", "AC/DC")
+        spier.change_volume(85)
         
         # GREETING
         if datetime.now().hour >= 0 and datetime.now().hour < 12:
@@ -79,32 +80,36 @@ if __name__ == "__main__":
         voice.speak(msg)
         
         # THE NEWS
-        # print("Wanna hear the news?")
-        # voice.speak("Wanna hear the news?")
-        # with sr.Microphone(device_index=1) as source:
-        #     ears.recognizer.adjust_for_ambient_noise(source)
-        #     audio = ears.recognizer.listen(source)
-        #     command = ears.recognizer.recognize_google(audio).lower()
-        #     print(f"You said: {command}")
-        # if "yes" in command or "please" in command or "sure" in command:
-        #     print("Sure thing!")
-        #     voice.speak("Sure thing!")
-        #     print("Today's top science news are:")
-        #     newslist = get_news()
-        #     voice.speak("Today's top science news are:")
-        #     for i, news in enumerate(newslist):
-        #         print(f"{i+1}. {news}")
-        #         voice.speak(news)
-        #         voice.speak(".")
-        # else:
-        #     print("Okay then.")
-        #     voice.speak("Okay then.")
-        
-        # newslist = get_news()
-        # voice.speak("Today's top news are:")
-        # for i, news in enumerate(newslist):
-        #     print(f"{i}. {news}")
-        #     voice.speak(news)
+        print("Wanna hear the news?")
+        voice.speak("Wanna hear the news?")
+        if spier.isbusy():
+            spier.change_volume(60)
+        try:
+            with sr.Microphone() as source:
+                ears.recognizer.adjust_for_ambient_noise(source)
+                audio = ears.recognizer.listen(source)
+                command = ears.recognizer.recognize_google(audio).lower()
+                print(f"You said: {command}")
+            if "yes" in command or "please" in command or "sure" in command:
+                print("Sure thing!")
+                voice.speak("Sure thing!")
+                print("Today's top science news are:")
+                newslist = get_news()
+                voice.speak("Today's top science news are:")
+                for i, news in enumerate(newslist):
+                    print(f"{i+1}. {news}")
+                    voice.speak(news)
+                    voice.speak(".")
+            else:
+                print("Okay then.")
+                voice.speak("Okay then.")
+                if spier.isbusy():
+                    spier.change_volume(85)
+        except sr.UnknownValueError:
+            print("No news for you then.")
+            voice.speak("No news for you then.")
+            if spier.isbusy():
+                spier.change_volume(85)
         
         # JARVIS READY
         print("I hope you have a creative day! Jarvis is at your service, for whatever you need sir.")
