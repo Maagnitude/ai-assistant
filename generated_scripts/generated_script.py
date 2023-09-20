@@ -1,4 +1,3 @@
-
 import math
 
 def calculate_square_root(number1, number2):

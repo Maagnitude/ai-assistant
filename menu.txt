@@ -4,3 +4,5 @@
 5. Change device    6. Weather
 7. Open browser     8. Search for
 9. Joke             10. Nothing
+
+Or say "create a script" to generate and run a python script.

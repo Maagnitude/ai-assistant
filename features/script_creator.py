@@ -25,9 +25,17 @@ class ScriptCreator:
     def generate_python_script(self, response):
         # Generate the Python script here
         python_script = self.extract_python_code(response)
+        
+        counter = 1
+        
+        while True:
+            script_file_path = os.path.join(self.python_scripts_folder, f"generated_script_{counter}.py")
+            
+            if not os.path.exists(script_file_path):
+                break
+                
+            counter += 1
 
-        # Save the generated Python script to a .py file
-        script_file_path = os.path.join(self.python_scripts_folder, "generated_script.py")
         with open(script_file_path, "w") as script_file:
             script_file.write(python_script)
 
